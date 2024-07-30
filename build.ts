@@ -1,5 +1,5 @@
-import { createOrUpdateRelease } from "./github";
-import { _main} from "./utilities";
+import { createOrUpdateRelease } from "./github.js";
+import { _main} from "./utilities.js";
 import {$} from 'execa';
 
 _main(async () => {
