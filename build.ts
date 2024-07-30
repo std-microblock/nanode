@@ -1,12 +1,13 @@
 import { createOrUpdateRelease } from "./github";
-import { _main, e } from "./utilities";
+import { _main} from "./utilities";
+import {$} from 'execa';
 
 _main(async () => {
     const version = 'v22.x'
-    await e`git clone --depth 1 --branch ${version} https://github.com/nodejs/node`
-    await e`cd node`
+    await $`git clone --depth 1 --branch ${version} https://github.com/nodejs/node`
+    process.chdir('node')
     if (process.platform === 'win32') {
-        await e`.\\vcbuild small-icu`
+        await $`.\\vcbuild small-icu`
 
         await createOrUpdateRelease({
             tag: version,
@@ -18,8 +19,8 @@ _main(async () => {
         })
 
     } else {
-        await e`./configure --with-intl=small-icu`
-        await e`make -j4`
+        await $`./configure --with-intl=small-icu`
+        await $`make -j4`
 
         await createOrUpdateRelease({
             tag: version,

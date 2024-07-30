@@ -1,10 +1,11 @@
+import { Octokit } from "octokit"
 
 
 export const createOrUpdateRelease = async (opts: {
     tag: string, releaseName: string, releaseNotes: string, token: string, upload_file_name: string, upload_file_path: string
 }) => {
     const { tag, releaseName, releaseNotes, token, upload_file_name, upload_file_path } = opts
-    const { Octokit } = await import('octokit')
+
     const octokit = new Octokit({ auth: token }).rest
 
     const { data: releaseList } = await octokit.repos.listReleases({
