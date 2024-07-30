@@ -8,7 +8,7 @@ on:
     branches: ["main"]
 
 permissions:
-  contents: read
+  contents: read, write
 
 jobs:
   test:
@@ -25,4 +25,4 @@ jobs:
         run: sudo apt-get install python3 g++ make python3-pip
 
       - name: Build
-        run: npm run build
+        run: npm i & npm run build
