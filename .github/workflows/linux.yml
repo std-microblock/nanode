@@ -1,0 +1,28 @@
+
+name: Build
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.3
+
+      - name: Install Node dependencies
+        run: sudo apt-get install python3 g++ make python3-pip
+
+      - name: Build
+        run: npm run build
