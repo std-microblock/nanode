@@ -4,7 +4,7 @@
   "description": "The minimalist builds of Node.JS",
   "main": "index.js",
   "scripts": {
-    "build": "tsc & node build.js"
+    "build": "tsc && node build.js"
   },
   "author": "",
   "license": "ISC",
