@@ -1,0 +1,17 @@
+{
+  "name": "nanode",
+  "version": "1.0.0",
+  "description": "The minimalist builds of Node.JS",
+  "main": "index.js",
+  "scripts": {
+    "build": "node -r esbuild-register build.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.23.0",
+    "esbuild-register": "^3.6.0",
+    "octokit": "^4.0.2"
+  }
+}
