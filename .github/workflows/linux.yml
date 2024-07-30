@@ -24,5 +24,8 @@ jobs:
       - name: Install Node dependencies
         run: sudo apt-get install python3 g++ make python3-pip
 
+      - name: Install packages
+        run: npm i
+
       - name: Build
-        run: npm i & npm run build
+        run:  npm run build
