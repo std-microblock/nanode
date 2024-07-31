@@ -10,7 +10,7 @@ _main(async () => {
     process.chdir('node')
 
     if (process.platform === 'win32') {
-        await $`./vcbuild.bat small-icu`
+        await $`cmd /c ./vcbuild.bat small-icu`
 
         await createOrUpdateRelease({
             tag: version,
