@@ -4,7 +4,7 @@ import { _main} from "./utilities.js";
 import {$} from 'execa';
 
 _main(async () => {
-    const version = 'v22.x'
+    const version = 'v20.x'
 
     await $`git clone --depth 1 --branch ${version} https://github.com/nodejs/node`
     process.chdir('node')
