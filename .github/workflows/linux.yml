@@ -1,33 +1,33 @@
 
-name: Build Linux
+# name: Build Linux
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+# on:
+#   push:
+#     branches: ["main"]
+#   pull_request:
+#     branches: ["main"]
 
-permissions:
-  contents: write
+# permissions:
+#   contents: write
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Setup repo
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Setup repo
+#         uses: actions/checkout@v4
         
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4.0.3
+#       - name: Setup Node.js environment
+#         uses: actions/setup-node@v4.0.3
 
-      - name: Install Node dependencies
-        run: sudo apt-get install python3 g++ make python3-pip
+#       - name: Install Node dependencies
+#         run: sudo apt-get install python3 g++ make python3-pip
 
-      - name: Install packages
-        run: npm i
+#       - name: Install packages
+#         run: npm i
 
-      - name: Build
-        run:  npm run build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Build
+#         run:  npm run build
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
