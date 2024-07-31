@@ -53,7 +53,7 @@ export const createOrUpdateRelease = async (opts: {
             repo: 'nanode',
             release_id: data.id,
             name: upload_file_name,
-            data: require('fs').readFileSync(upload_file_path)
+            data: upload_file_path
         })
     }
 }
