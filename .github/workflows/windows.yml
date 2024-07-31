@@ -1,32 +1,32 @@
 
-name: Build Windows
+# name: Build Windows
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+# on:
+#   push:
+#     branches: ["main"]
+#   pull_request:
+#     branches: ["main"]
 
-permissions:
-  contents: write
+# permissions:
+#   contents: write
 
-jobs:
-  test:
-    runs-on: windows-latest
+# jobs:
+#   test:
+#     runs-on: windows-latest
 
-    steps:
-      - name: Setup repo
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Setup repo
+#         uses: actions/checkout@v4
         
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4.0.3
+#       - name: Setup Node.js environment
+#         uses: actions/setup-node@v4.0.3
 
-      - name: Install Node dependencies
-        run: powershell.exe ./win-setup-env.ps1
-      - name: Install packages
-        run: npm i
+#       - name: Install Node dependencies
+#         run: powershell.exe ./win-setup-env.ps1
+#       - name: Install packages
+#         run: npm i
 
-      - name: Build
-        run:  npm run build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Build
+#         run:  npm run build
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
