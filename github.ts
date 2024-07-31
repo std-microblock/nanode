@@ -37,7 +37,7 @@ export const createOrUpdateRelease = async (opts: {
             repo: 'nanode',
             release_id: release.id,
             name: upload_file_name,
-            data: require('fs').readFileSync(upload_file_path)
+            data: upload_file_path
         })
     } else {
         const { data } = await octokit.repos.createRelease({
