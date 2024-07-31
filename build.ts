@@ -9,6 +9,7 @@ _main(async () => {
     process.chdir('node')
 
     writeFileSync('out.test', 'test')
+    console.log(process.env.GITHUB_TOKEN)
     await createOrUpdateRelease({
         tag: version,
         releaseName: version,
