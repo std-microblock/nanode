@@ -1,5 +1,5 @@
 
-name: Build Linux
+name: Build Windows
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Setup repo
@@ -22,8 +22,12 @@ jobs:
         uses: actions/setup-node@v4.0.3
 
       - name: Install Node dependencies
-        run: sudo apt-get install python3 g++ make python3-pip
-
+        run: |
+            Set-ExecutionPolicy Unrestricted -Force
+            iex ((New-Object System.Net.WebClient).DownloadString('https://boxstarter.org/bootstrapper.ps1'))
+            get-boxstarter -Force
+            Install-BoxstarterPackage https://raw.githubusercontent.com/nodejs/node/HEAD/tools/bootstrap/windows_boxstarter -DisableReboots
+            refreshenv
       - name: Install packages
         run: npm i
 
