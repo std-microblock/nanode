@@ -22,12 +22,7 @@ jobs:
         uses: actions/setup-node@v4.0.3
 
       - name: Install Node dependencies
-        run: |
-            Set-ExecutionPolicy Unrestricted -Force
-            iex ((New-Object System.Net.WebClient).DownloadString('https://boxstarter.org/bootstrapper.ps1'))
-            get-boxstarter -Force
-            powershell.exe -Command Install-BoxstarterPackage https://raw.githubusercontent.com/nodejs/node/HEAD/tools/bootstrap/windows_boxstarter -DisableReboots
-            refreshenv
+        run: powershell.exe ./win-setup-env.ps1
       - name: Install packages
         run: npm i
 
