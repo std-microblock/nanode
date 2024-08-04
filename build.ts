@@ -11,7 +11,8 @@ export interface NanodeBuildOptions {
     v8_opts?: boolean,
     target_arch?: 'x64' | 'arm64' | 'x86',
     no_jit?: boolean,
-    use_lto?: boolean
+    use_lto?: boolean,
+    win_use_clang_cl?: boolean
 }
 
 export const buildAndUploadNanode = async (version = 'v18.x', {
@@ -19,15 +20,20 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
     v8_opts = false,
     target_arch = 'x64',
     no_jit = false,
-    use_lto = false
+    use_lto = false,
+    win_use_clang_cl = false
 }: NanodeBuildOptions) => {
-    const buildName = `nanode-${version}-icu_${icu_mode}${v8_opts ? '-v8_opts' : ''}${no_jit ? '-nojit' : ''}${use_lto ? '-lto' : ''}-${target_arch}`;
+    if (win_use_clang_cl && process.platform !== 'win32') {
+        console.error('win_use_clang_cl is only supported on Windows')
+        return
+    }
+    const buildName = `nanode-${version}-icu_${icu_mode}${v8_opts ? '-v8_opts' : ''}${no_jit ? '-nojit' : ''}${use_lto ? '-lto' : ''}${win_use_clang_cl ? '-clang' : ''}-${target_arch}`;
 
     const { data: release } = await octokit.repos.getReleaseByTag({
         owner: 'MicroCBer',
         repo: 'nanode',
         tag: version
-    }).catch(e=>({
+    }).catch(e => ({
         data: {
             assets: []
         }
@@ -72,7 +78,7 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
             await patchFile('configure.py', code => {
                 if (platform() === 'win32')
                     code = code.replaceAll('options.with_ltcg', 'True');
-                else 
+                else
                     code = code.replaceAll('options.enable_lto', 'True');
                 return code
             })
@@ -92,7 +98,7 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
                 small: 'small-icu',
                 none: 'intl-none'
             }
-            await $`cmd /c vcbuild.bat ${target_arch} ${winIcuArg[icu_mode]}`
+            await $`cmd /c vcbuild.bat ${target_arch} ${winIcuArg[icu_mode]} ${win_use_clang_cl ? 'clang-cl' : ''}`
 
             await createOrUpdateRelease({
                 tag: version,
@@ -100,6 +106,14 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
                 releaseNotes: 'Upload',
                 upload_file_name: `${buildName}.exe`,
                 upload_file_path: 'out\\Release\\node.exe'
+            })
+
+            await createOrUpdateRelease({
+                tag: version,
+                releaseName: version,
+                releaseNotes: 'Upload',
+                upload_file_name: `${buildName}.pdb`,
+                upload_file_path: 'out\\Release\\node.pdb'
             })
 
         } else {
@@ -113,6 +127,14 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
                 releaseNotes: 'Upload',
                 upload_file_name: buildName,
                 upload_file_path: 'out/Release/node'
+            })
+
+            await createOrUpdateRelease({
+                tag: version,
+                releaseName: version,
+                releaseNotes: 'Upload',
+                upload_file_name: `${buildName}.d`,
+                upload_file_path: 'out/Release/node.d'
             })
         }
     } finally {

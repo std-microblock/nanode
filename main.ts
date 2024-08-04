@@ -10,6 +10,7 @@ _main(async () => {
     const arch = process.argv[4] || 'x64'
     console.log('Building nanode', targetBranch, strategy, arch)
     await buildAndUploadNanode(targetBranch, {
-        ...strategy, target_arch: arch as any
+        ...strategy, target_arch: arch as any,
+        win_use_clang_cl: process.platform === 'win32'
     })
 })
