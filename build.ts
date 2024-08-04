@@ -28,8 +28,8 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
         return
     }
 
-    if (win_use_clang_cl && parseVersion(version) < 21) {
-        console.error('win_use_clang_cl is only supported on Node.js 21 and above')
+    if (win_use_clang_cl && parseVersion(version) < 22) {
+        console.error('win_use_clang_cl is only supported on Node.js 22 and above')
         return
     }
 

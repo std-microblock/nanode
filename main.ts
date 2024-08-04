@@ -11,6 +11,6 @@ _main(async () => {
     console.log('Building nanode', targetBranch, strategy, arch)
     await buildAndUploadNanode(targetBranch, {
         ...strategy, target_arch: arch as any,
-        win_use_clang_cl: process.platform === 'win32' && parseVersion(targetBranch) >= 21
+        win_use_clang_cl: process.platform === 'win32' && parseVersion(targetBranch) >= 22
     })
 })
