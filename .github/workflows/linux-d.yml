@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         version: ['v21.x', 'v20.x', 'v19.x', 'v18.x', 'v17.x', 'v16.x']
-        strategy: [a, b, c, d]
+        strategy: [d]
         architecture: [arm64, x64]
     runs-on: ubuntu-latest
 
