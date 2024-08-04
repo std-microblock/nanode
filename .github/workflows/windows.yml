@@ -11,9 +11,11 @@ permissions:
   contents: write
 
 jobs:
-  test:
+  build-windows:
     runs-on: windows-latest
-
+    strategy:
+      matrix:
+        version: ['v21.x', 'v20.x', 'v19.x', 'v18.x', 'v17.x', 'v16.x']
     steps:
       - name: Setup repo
         uses: actions/checkout@v4
@@ -27,6 +29,6 @@ jobs:
         run: npm i
 
       - name: Build
-        run:  npm run build
+        run:  npm run build ${{ matrix.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
