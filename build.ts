@@ -5,7 +5,6 @@ import { $ } from 'execa';
 import { rmdir } from "fs/promises";
 
 export const buildAndUploadNanode = async (version = 'v18.x') => {
-    process.env.NODE_DEBUG = 'execa'
     await $`git clone --depth 1 --branch ${version} https://github.com/nodejs/node`
     process.chdir('node')
 

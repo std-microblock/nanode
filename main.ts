@@ -1,6 +1,7 @@
 import { Octokit } from "octokit";
 import { _main } from "./utilities.js";
 import { buildAndUploadNanode } from "./build.js";
+process.env.NODE_DEBUG = 'execa'
 
 _main(async () => {
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN }).rest
