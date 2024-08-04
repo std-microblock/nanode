@@ -14,14 +14,12 @@ export const minifyUndici = async () => {
         return result
     }
 
-    const files = await readdirRecursive('deps/undici/src')
-    for (const file of files) {
-        if (!file.endsWith('.js')) continue
-        await build({
-            entryPoints: [file],
-            minify: true,
-            outfile: file,
-            allowOverwrite: true
-        })
-    }
+    const file = 'deps/undici/undici.js'
+    await build({
+        entryPoints: [file],
+        minify: true,
+        outfile: file,
+        allowOverwrite: true,
+        bundle: false
+    })
 }

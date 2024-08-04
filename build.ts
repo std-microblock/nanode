@@ -11,11 +11,12 @@ export const buildAndUploadNanodeAll = async (version = 'v18.x') => {
         // Skip x86 on Windows, as it's not supported anymore
         if (target_arch === 'x86' && process.platform === 'win32') continue;
 
-        await buildAndUploadNanode(version, { icu_mode: 'none', v8_opts: true, target_arch })
-        await buildAndUploadNanode(version, { icu_mode: 'none', v8_opts: true, target_arch, no_jit: true })
-        await buildAndUploadNanode(version, { icu_mode: 'none', target_arch })
+        let err_str = ''
+        await buildAndUploadNanode(version, { icu_mode: 'none', v8_opts: true, target_arch }).catch(() => { })
+        await buildAndUploadNanode(version, { icu_mode: 'none', v8_opts: true, target_arch, no_jit: true }).catch(() => { })
+        await buildAndUploadNanode(version, { icu_mode: 'none', target_arch }).catch(() => { })
         if (process.platform !== 'win32') {
-            await buildAndUploadNanode(version, { icu_mode: 'system', target_arch })
+            await buildAndUploadNanode(version, { icu_mode: 'system', target_arch }).catch(() => { })
         }
     }
 }
@@ -42,6 +43,7 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
         if (v8_opts)
             await patchFile('configure.py', code => {
                 code = code.replaceAll('options.v8_disable_object_print', 'True');
+                code = code.replaceAll('options.v8_enable_object_print', 'False');
                 // code = code.replaceAll('options.v8_enable_pointer_compression', 'False');
                 code = code.replaceAll('options.without_inspector', 'True');
                 code = code.replaceAll('options.v8_enable_i18n_support', 'False');
