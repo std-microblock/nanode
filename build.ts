@@ -12,7 +12,8 @@ export interface NanodeBuildOptions {
     target_arch?: 'x64' | 'arm64' | 'x86',
     no_jit?: boolean,
     use_lto?: boolean,
-    win_use_clang_cl?: boolean
+    win_use_clang_cl?: boolean,
+    pointer_compression?: boolean
 }
 
 export const buildAndUploadNanode = async (version = 'v18.x', {
@@ -21,7 +22,8 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
     target_arch = 'x64',
     no_jit = false,
     use_lto = false,
-    win_use_clang_cl = false
+    win_use_clang_cl = false,
+    pointer_compression = true
 }: NanodeBuildOptions) => {
     if (win_use_clang_cl && process.platform !== 'win32') {
         console.error('win_use_clang_cl is only supported on Windows')
@@ -33,7 +35,7 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
         return
     }
 
-    const buildName = `nanode-${version}-icu_${icu_mode}${v8_opts ? '-v8_opts' : ''}${no_jit ? '-nojit' : ''}${use_lto ? '-lto' : ''}${win_use_clang_cl ? '-clang' : ''}-${target_arch}`;
+    const buildName = `nanode-${version}-icu_${icu_mode}${v8_opts ? '-v8_opts' : ''}${no_jit ? '-nojit' : ''}${use_lto ? '-lto' : ''}${win_use_clang_cl ? '-clang' : ''}${pointer_compression ? '' : '-ptr_compr'}-${target_arch}`;
 
     const { data: release } = await octokit.repos.getReleaseByTag({
         owner: 'MicroCBer',
