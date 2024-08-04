@@ -16,7 +16,8 @@ export const minifyUndici = async () => {
 
     const files = await readdirRecursive('deps/undici/src')
     for (const file of files) {
-        build({
+        if (!file.endsWith('.js')) continue
+        await build({
             entryPoints: [file],
             minify: true,
             outfile: file,
