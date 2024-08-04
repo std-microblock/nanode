@@ -1,13 +1,12 @@
 import { readFile } from "fs/promises"
 import { Octokit } from "octokit"
 
+export const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN }).rest
 
 export const createOrUpdateRelease = async (opts: {
-    tag: string, releaseName: string, releaseNotes: string, token: string, upload_file_name: string, upload_file_path: string
+    tag: string, releaseName: string, releaseNotes: string, upload_file_name: string, upload_file_path: string
 }) => {
-    const { tag, releaseName, releaseNotes, token, upload_file_name, upload_file_path } = opts
-
-    const octokit = new Octokit({ auth: token }).rest
+    const { tag, releaseName, releaseNotes, upload_file_name, upload_file_path } = opts
 
     const { data: releaseList } = await octokit.repos.listReleases({
         owner: 'MicroCBer',

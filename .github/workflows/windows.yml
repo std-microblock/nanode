@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        version: ['v21.x', 'v20.x', 'v19.x', 'v18.x', 'v17.x', 'v16.x']
+        version: ['v20.x', 'v18.x', 'v16.x', 'v19.x', 'v17.x']
         strategy: [a, b, c]
         architecture: [arm64, x64]
     steps:
