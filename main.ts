@@ -1,10 +1,15 @@
 import { Octokit } from "octokit";
 import { _main } from "./utilities.js";
-import { buildAndUploadNanodeAll } from "./build.js";
+import { buildAndUploadNanode } from "./build.js";
+import { strategies } from "./strategy.js";
 process.env.NODE_DEBUG = 'execa'
 
 _main(async () => {
     const targetBranch = process.argv[2] || 'v18.x'
-    console.log('Building nanode', targetBranch)
-    await buildAndUploadNanodeAll(targetBranch)
+    const strategy = strategies[process.argv[3]]
+    const arch = process.argv[4] || 'x64'
+    console.log('Building nanode', targetBranch, strategy, arch)
+    await buildAndUploadNanode(targetBranch, {
+        ...strategy, target_arch: arch
+    })
 })

@@ -5,21 +5,6 @@ import { $ } from 'execa';
 import { rmdir } from "fs/promises";
 import { minifyUndici } from "./minify-undici.js";
 
-
-export const buildAndUploadNanodeAll = async (version = 'v18.x') => {
-    for (const target_arch of ['x64', 'arm64', 'x86'] as const) {
-        // Skip x86 on Windows, as it's not supported anymore
-        if (target_arch === 'x86' && process.platform === 'win32') continue;
-
-        let err_str = ''
-        await buildAndUploadNanode(version, { icu_mode: 'none', v8_opts: true, target_arch }).catch(() => { })
-        await buildAndUploadNanode(version, { icu_mode: 'none', v8_opts: true, target_arch, no_jit: true }).catch(() => { })
-        await buildAndUploadNanode(version, { icu_mode: 'none', target_arch }).catch(() => { })
-        if (process.platform !== 'win32') {
-            await buildAndUploadNanode(version, { icu_mode: 'system', target_arch }).catch(() => { })
-        }
-    }
-}
 export const buildAndUploadNanode = async (version = 'v18.x', {
     icu_mode = 'full',
     v8_opts = false,
