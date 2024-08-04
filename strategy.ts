@@ -7,4 +7,5 @@ export const strategies: {
     b: { icu_mode: 'none', v8_opts: true, no_jit: true, use_lto: true },
     c: { icu_mode: 'none', use_lto: true },
     d: { icu_mode: 'system', use_lto: true },
+    ptrcompression: { icu_mode: 'none', use_lto: true, pointer_compression: true },
 }

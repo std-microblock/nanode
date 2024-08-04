@@ -3,7 +3,7 @@ import { createOrUpdateRelease, octokit } from "./github.js";
 import { _main, parseVersion, patchFile } from "./utilities.js";
 import { $ } from 'execa';
 import { rmdir } from "fs/promises";
-import { minifyUndici } from "./minify-undici.js";
+import { minifyJS } from "./minify-undici.js";
 import { platform } from "os";
 
 export interface NanodeBuildOptions {
@@ -13,7 +13,8 @@ export interface NanodeBuildOptions {
     no_jit?: boolean,
     use_lto?: boolean,
     win_use_clang_cl?: boolean,
-    pointer_compression?: boolean
+    pointer_compression?: boolean,
+    make_upx_build?: boolean
 }
 
 export const buildAndUploadNanode = async (version = 'v18.x', {
@@ -23,7 +24,8 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
     no_jit = false,
     use_lto = false,
     win_use_clang_cl = false,
-    pointer_compression = false
+    pointer_compression = false,
+    make_upx_build = true
 }: NanodeBuildOptions) => {
     if (win_use_clang_cl && process.platform !== 'win32') {
         console.error('win_use_clang_cl is only supported on Windows')
@@ -35,7 +37,7 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
         return
     }
 
-    const buildName = `nanode-${version}-icu_${icu_mode}${v8_opts ? '-v8_opts' : ''}${no_jit ? '-nojit' : ''}${use_lto ? '-lto' : ''}${win_use_clang_cl ? '-clang' : ''}${pointer_compression ? '' : '-ptr_compr'}-${target_arch}`;
+    const buildName = `nanode-${version}-icu_${icu_mode}${v8_opts ? '-v8_opts' : ''}${no_jit ? '-nojit' : ''}${use_lto ? '-lto' : ''}${win_use_clang_cl ? '-clang' : ''}${pointer_compression ? '-ptr_compr' : ''}-${target_arch}`;
 
     const { data: release } = await octokit.repos.getReleaseByTag({
         owner: 'MicroCBer',
@@ -61,16 +63,21 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
     await $`git clone --depth 1 --branch ${version} https://github.com/nodejs/node`
     process.chdir('node')
 
-    await minifyUndici().catch(e => {
-        console.error('Failed to minify undici', e)
+    await minifyJS().catch(e => {
+        console.error('Failed to minify JS', e)
     })
 
     try {
+        if (pointer_compression)
+            await patchFile('configure.py', code => {
+                code = code.replaceAll('options.v8_enable_pointer_compression', 'True');
+                return code
+            })
+
         if (v8_opts)
             await patchFile('configure.py', code => {
                 code = code.replaceAll('options.v8_disable_object_print', 'True');
                 code = code.replaceAll('options.v8_enable_object_print', 'False');
-                // code = code.replaceAll('options.v8_enable_pointer_compression', 'False');
                 code = code.replaceAll('options.without_inspector', 'True');
                 code = code.replaceAll('options.v8_enable_i18n_support', 'False');
                 return code
@@ -126,6 +133,17 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
                 upload_file_path: 'out\\Release\\node.pdb'
             })
 
+            if (make_upx_build) {
+                await $`upx --best --ultra-brute out/Release/node.exe`
+                await createOrUpdateRelease({
+                    tag: version,
+                    releaseName: version,
+                    releaseNotes: 'Upload',
+                    upload_file_name: `${buildName}-upx.exe`,
+                    upload_file_path: 'out/Release/node.exe'
+                })
+            }
+
         } else {
             await $`./configure --with-intl=${icu_mode === 'none' ? icu_mode : `${icu_mode}-icu`}`
             await $`make -j4`
@@ -138,6 +156,17 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
                 upload_file_name: buildName,
                 upload_file_path: 'out/Release/node'
             })
+
+            if (make_upx_build) {
+                await $`upx --best --ultra-brute out/Release/node`
+                await createOrUpdateRelease({
+                    tag: version,
+                    releaseName: version,
+                    releaseNotes: 'Upload',
+                    upload_file_name: `${buildName}-upx`,
+                    upload_file_path: 'out/Release/node'
+                })
+            }
         }
     } finally {
         process.chdir('..')

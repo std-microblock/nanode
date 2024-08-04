@@ -1,5 +1,5 @@
 
-name: Build Linux
+name: Build Windows
 
 on:
   push:
@@ -11,14 +11,13 @@ permissions:
   contents: write
 
 jobs:
-  build-linux:
+  build-windows:
+    runs-on: windows-latest
     strategy:
       matrix:
-        version: ['v22.x', 'v20.x', 'v18.x', 'v16.x', 'v21.x', 'v19.x', 'v17.x']
-        strategy: [a, b, c, d]
+        version: ['v22.x', 'v18.x', 'v16.x', 'v20.x', 'v19.x', 'v17.x']
+        strategy: [ptrcompression]
         architecture: [arm64, x64]
-    runs-on: ubuntu-latest
-
     steps:
       - name: Setup repo
         uses: actions/checkout@v4
@@ -27,8 +26,7 @@ jobs:
         uses: actions/setup-node@v4.0.3
 
       - name: Install Node dependencies
-        run: sudo apt-get install python3 g++ make python3-pip upx
-
+        run: powershell.exe ./win-setup-env.ps1
       - name: Install packages
         run: npm i
 
