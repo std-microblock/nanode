@@ -1,6 +1,6 @@
 import { writeFileSync } from "fs";
 import { createOrUpdateRelease, octokit } from "./github.js";
-import { _main, patchFile } from "./utilities.js";
+import { _main, parseVersion, patchFile } from "./utilities.js";
 import { $ } from 'execa';
 import { rmdir } from "fs/promises";
 import { minifyUndici } from "./minify-undici.js";
@@ -27,6 +27,12 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
         console.error('win_use_clang_cl is only supported on Windows')
         return
     }
+
+    if (win_use_clang_cl && parseVersion(version) < 21) {
+        console.error('win_use_clang_cl is only supported on Node.js 21 and above')
+        return
+    }
+
     const buildName = `nanode-${version}-icu_${icu_mode}${v8_opts ? '-v8_opts' : ''}${no_jit ? '-nojit' : ''}${use_lto ? '-lto' : ''}${win_use_clang_cl ? '-clang' : ''}-${target_arch}`;
 
     const { data: release } = await octokit.repos.getReleaseByTag({

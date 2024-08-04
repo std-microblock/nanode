@@ -1,5 +1,5 @@
 import { Octokit } from "octokit";
-import { _main } from "./utilities.js";
+import { _main, parseVersion } from "./utilities.js";
 import { buildAndUploadNanode } from "./build.js";
 import { strategies } from "./strategy.js";
 process.env.NODE_DEBUG = 'execa'
@@ -11,6 +11,6 @@ _main(async () => {
     console.log('Building nanode', targetBranch, strategy, arch)
     await buildAndUploadNanode(targetBranch, {
         ...strategy, target_arch: arch as any,
-        win_use_clang_cl: process.platform === 'win32'
+        win_use_clang_cl: process.platform === 'win32' && parseVersion(targetBranch) >= 21
     })
 })
