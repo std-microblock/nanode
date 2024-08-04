@@ -136,14 +136,6 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
                 upload_file_name: buildName,
                 upload_file_path: 'out/Release/node'
             })
-
-            await createOrUpdateRelease({
-                tag: version,
-                releaseName: version,
-                releaseNotes: 'Upload',
-                upload_file_name: `${buildName}.d`,
-                upload_file_path: 'out/Release/node.d'
-            })
         }
     } finally {
         process.chdir('..')
