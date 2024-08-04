@@ -1,3 +1,4 @@
+import { readFile } from "fs/promises"
 import { Octokit } from "octokit"
 
 
@@ -37,7 +38,7 @@ export const createOrUpdateRelease = async (opts: {
             repo: 'nanode',
             release_id: release.id,
             name: upload_file_name,
-            data: upload_file_path
+            data: await readFile(upload_file_path) as any
         })
     } else {
         const { data } = await octokit.repos.createRelease({
@@ -53,7 +54,7 @@ export const createOrUpdateRelease = async (opts: {
             repo: 'nanode',
             release_id: data.id,
             name: upload_file_name,
-            data: upload_file_path
+            data: await readFile(upload_file_path) as any
         })
     }
 }
