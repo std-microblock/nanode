@@ -1,8 +1,10 @@
 import { build } from "esbuild"
 import { readdir } from "fs/promises"
+import { join } from "path"
+import { cwd } from "process"
 
 export const minifyUndici = async () => {
-    const readdirRecursive = async (dir: string)=>{
+    const readdirRecursive = async (dir: string) => {
         let result: string[] = []
         for (const dirent of await readdir(dir, { withFileTypes: true })) {
             if (dirent.isDirectory()) {
@@ -14,7 +16,7 @@ export const minifyUndici = async () => {
         return result
     }
 
-    const file = 'deps/undici/undici.js'
+    const file = join(cwd(), '/deps/undici/undici.js')
     await build({
         entryPoints: [file],
         minify: true,
