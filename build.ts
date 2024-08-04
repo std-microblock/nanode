@@ -27,7 +27,11 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
         owner: 'MicroCBer',
         repo: 'nanode',
         tag: version
-    })
+    }).catch(e=>({
+        data: {
+            assets: []
+        }
+    }))
 
     console.log('Check if release exists: ', buildName)
     if (release.assets.some(asset => {
