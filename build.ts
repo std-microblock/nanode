@@ -104,8 +104,10 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
                 small: 'small-icu',
                 none: 'intl-none'
             }
-            await $`cmd /c vcbuild.bat ${target_arch} ${winIcuArg[icu_mode]} ${win_use_clang_cl ? 'clang-cl' : ''}`
-
+            if (win_use_clang_cl)
+                await $`cmd /c vcbuild.bat ${target_arch} ${winIcuArg[icu_mode]} clang-cl`
+            else
+                await $`cmd /c vcbuild.bat ${target_arch} ${winIcuArg[icu_mode]}`
             await createOrUpdateRelease({
                 tag: version,
                 releaseName: version,
