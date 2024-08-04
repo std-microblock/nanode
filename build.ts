@@ -23,7 +23,7 @@ export const buildAndUploadNanode = async (version = 'v18.x', {
     no_jit = false,
     use_lto = false,
     win_use_clang_cl = false,
-    pointer_compression = true
+    pointer_compression = false
 }: NanodeBuildOptions) => {
     if (win_use_clang_cl && process.platform !== 'win32') {
         console.error('win_use_clang_cl is only supported on Windows')
